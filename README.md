@@ -8,6 +8,13 @@
 | Program to demonstrate leader election algorithm             | [leader_election.c](https://github.com/Vigneswar-A/PDS_PROGRAMS/blob/main/leader_election.c)           |
 | Program to implement fault tolerance mechanism using Byzantine agreement | [byzantine_agreement.c](https://github.com/Vigneswar-A/PDS_PROGRAMS/blob/main/byzantine_agreement.c)       |
 
+# Commands
+| Command                                 | Description                                                       |
+|-----------------------------------------|-------------------------------------------------------------------|
+| `mpicc -o output_file source_file.c`   | Compiles a C source file using the MPI compiler wrapper.         |
+| `mpirun -np <num_processes> ./output_file` | Executes the compiled MPI program with the specified number of processes. |
+| `man <mpi_function_name>` | Shows documentation of the mpi function|
+
 # Help
 ### MPI Functions
 
@@ -40,3 +47,5 @@
 | `MPI_STATUS_IGNORE`               | A constant indicating that the status of the message is not needed. |
 | `MPI_SUM`                         | An operation for summing values in a reduction operation.          |
 | `MPI_TAG`                         | An attribute in `MPI_Status` that indicates the message's tag.    |
+
+###
