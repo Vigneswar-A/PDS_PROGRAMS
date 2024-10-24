@@ -33,7 +33,6 @@ int main(int argc, char **argv)
     if (rank != DETECT)
     {
         max_rank = (max_rank > rank) ? max_rank : rank;
-        next_process = ((rank+1)%size != FAIL) ? (rank+1)%size : (rank+2)%size;
         MPI_Send(&max_rank, 1, MPI_INT, NEXT_PROCESS, TAG, MPI_COMM_WORLD);
     }
     else
