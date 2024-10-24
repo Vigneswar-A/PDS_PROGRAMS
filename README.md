@@ -1,5 +1,5 @@
 # MPI Codes
-| Description                                                  | File Name                     |
+| Experiment Name                                                | File Name                     |
 |--------------------------------------------------------------|-------------------------------|
 | Design chat server application with multiple clients         | `client_server.c`             |
 | Program to implement mutual exclusion in distributed environment | `mutual_exclusion.c`          |
