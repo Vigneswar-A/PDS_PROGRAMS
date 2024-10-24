@@ -63,4 +63,17 @@ int main(int argc, char** argv)
     
 
     MPI_Finalize();
+    return 0;
 }
+
+/*
+OUTPUT:
+Process 0 broadcasting message: Hello from root!
+Process 1 received broadcast message: Hello from root!
+Process 2 received broadcast message: Hello from root!
+Process 3 received broadcast message: Hello from root!
+Root process received message: Hello from process 1
+Root process received message: Hello from process 2
+Root process received message: Hello from process 3
+Process 2 received message: Message from process 1 to 2
+*/
