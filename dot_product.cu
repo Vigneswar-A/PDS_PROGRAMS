@@ -1,27 +1,26 @@
 #include <cuda.h>
 #include <stdio.h>
 
-#define N 16
+#define N 25
 
 __global__ void dot_product(int *A, int *B, int *C)
 {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idx < N)
-    {
-        C[idx] = A[idx] * B[idx];   
-    }
+    if (idx >= N) return;
+    C[idx] = A[idx] * B[idx];  
 }
 
 __global__ void reduce(int *C)
 {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-
+    if (idx >= N) return;
     // Parallel reduction technique
-    for (int s = N / 2; s > 0; s >>= 1) 
-    {
-        if (idx+s < N)
-        {
-            C[idx] += C[idx + s];
+    int stride = 1;
+    while (stride < N && idx%stride == 0){
+        stride *= 2;
+        int parent = idx/stride * stride;
+        if (parent != idx){
+            C[parent] += C[idx];
         }
         __syncthreads();
     }
@@ -30,9 +29,7 @@ __global__ void reduce(int *C)
 int main()
 {
     // Create host and device variables
-    int A[N];
-    int B[N];
-    int C[N];
+    int A[N], B[N], C[N];
     int *devA, *devB, *devC;
 
     // Initialize array with sample input values
@@ -51,14 +48,27 @@ int main()
     cudaMemcpy(devA, A, sizeof(A), cudaMemcpyHostToDevice);
     cudaMemcpy(devB, B, sizeof(B), cudaMemcpyHostToDevice);
 
+    // Initialize events to compute execution time
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+
     // Compute the dot product
+    cudaEventRecord(start);
     dot_product<<<1, N>>>(devA, devB, devC);
     reduce<<<1, N>>>(devC);
+    cudaEventRecord(stop);
+    cudaEventSynchronize(stop);
 
     // Copy result to host memory
     cudaMemcpy(C, devC, sizeof(C), cudaMemcpyDeviceToHost);
 
-    printf("Dot Product = %d\n", C[0]);
+    // Compute execution time
+    float ms;
+    cudaEventElapsedTime(&ms, start, stop);
+
+    printf("Dot product : %d\n", C[0]);
+    printf("Execution time (CUDA): %fms\n", ms);
 
     // Free the device memory
     cudaFree(devA);
@@ -67,3 +77,8 @@ int main()
 
     return 0;
 }
+
+/*
+Dot product : 50
+Execution time (CUDA): 0.037312ms
+*/
